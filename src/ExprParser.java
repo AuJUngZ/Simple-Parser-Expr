@@ -12,24 +12,24 @@ public class ExprParser implements Parser {
         this.tkz = tokenizer;
     }
 
-    public int parse() throws SyntaxError {
-        int result = parseE();
+    public Expr parse() throws SyntaxError {
+        Expr result = parseE();
         if (tkz.hasNext()) {
             throw new SyntaxError("Unexpected token: " + tkz.peek());
         }
         return result;
     }
 
-    private int parseE() throws SyntaxError {
+    private Expr parseE() throws SyntaxError {
         try {
-            int result = parseT();
+            Expr result = parseT();
             while (tkz.hasNext() && (tkz.peek().equals("+") || tkz.peek().equals("-"))) {
                 if (tkz.peek("+")) {
                     tkz.consume("+");
-                    result += parseT();
+                    result = new BinaryArithExpr(result, "+", parseT());
                 } else if (tkz.peek("-")) {
                     tkz.consume("-");
-                    result -= parseT();
+                    result = new BinaryArithExpr(result, "-", parseT());
                 }
             }
             return result;
@@ -38,19 +38,19 @@ public class ExprParser implements Parser {
         }
     }
 
-    private int parseT() throws SyntaxError {
+    private Expr parseT() throws SyntaxError {
         try {
-            int result = parseF();
+            Expr result = parseF();
             while (tkz.hasNext() && (tkz.peek().equals("*") || tkz.peek().equals("/") || tkz.peek().equals("%"))) {
                 if (tkz.peek("*")) {
                     tkz.consume("*");
-                    result *= parseF();
+                    result = new BinaryArithExpr(result, "*", parseF());
                 } else if (tkz.peek("/")) {
                     tkz.consume("/");
-                    result /= parseF();
+                    result = new BinaryArithExpr(result, "/", parseF());
                 } else if (tkz.peek("%")) {
                     tkz.consume("%");
-                    result %= parseF();
+                    result = new BinaryArithExpr(result, "%", parseF());
                 }
             }
             return result;
@@ -59,16 +59,15 @@ public class ExprParser implements Parser {
         }
     }
 
-    private int parseF() throws SyntaxError {
+    private Expr parseF() throws SyntaxError {
         try {
             if (tkz.peek("(")) {
                 tkz.consume("(");
-                int result = parseE();
+                Expr result = parseE();
                 tkz.consume(")");
                 return result;
             } else {
-                int result = Integer.parseInt(tkz.consume());
-                return result;
+                return new IntLit(Integer.parseInt(tkz.consume()));
             }
         } catch (NoSuchElementException e) {
             throw new SyntaxError("Unexpected end of input");
