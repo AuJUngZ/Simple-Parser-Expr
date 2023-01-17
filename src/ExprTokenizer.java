@@ -63,6 +63,12 @@ public class ExprTokenizer implements Tokenizer {
                 s.append(src.charAt(pos));
                 pos++;
             }
+        }else if(Character.isAlphabetic(c)){
+            while (pos < src.length() && Character.isAlphabetic(src.charAt(pos))) {
+                s.append(src.charAt(pos));
+                pos++;
+            }
+
         }else if(c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '%'){
             s.append(c);
             pos++;

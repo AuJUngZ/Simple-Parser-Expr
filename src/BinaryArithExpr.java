@@ -9,9 +9,9 @@ public class BinaryArithExpr implements Expr{
         this.right = right;
     }
 
-    public int eval() throws EvalError {
-        int lv = left.eval();
-        int rv = right.eval();
+    public int eval(Map<String,Integer> bindings) throws EvalError {
+        int lv = left.eval(bindings);
+        int rv = right.eval(bindings);
         if(op.equals("+")) return lv + rv;
         if(op.equals("-")) return lv - rv;
         if(op.equals("*")) return lv * rv;

@@ -1,26 +1,24 @@
-import java.sql.SQLOutput;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Lab11 {
-    public static void main(String[] args) {
-        StringBuilder s = new StringBuilder();
-        String[] test = {"1+2", "1+5*3", "l/2", "(1+2)*3", "1/0","8*9/7","1+1"};
-        for (String str : test) {
-            try {
-                s.setLength(0);
-                Parser p = new ExprParser(new ExprTokenizer(str));
-                Expr e = p.parse();
-                e.prettyPrint(s);
-                System.out.print(s + " = " + e.eval());
-                System.out.println();
-            }catch (SyntaxError e){
-                System.out.println(e.getMessage());
-            }catch (EvalError e){
-                System.out.println(e.getMessage());
-            }catch (Exception e){
-                System.out.println(e.getMessage());
-            }
+    public static void main(String[] args) throws IOException, SyntaxError, EvalError {
+        Map<String,Integer> map = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        String[] test = {"1-A+B"};
+        for(String s : test){
+            Parser p = new ExprParser(new ExprTokenizer(s));
+            Expr e = p.parse();
+            e.prettyPrint(sb);
+            System.out.println(sb.toString());
+            System.out.println(e.eval(map));
+            sb.setLength(0);
         }
     }
 }

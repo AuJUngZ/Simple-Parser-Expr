@@ -67,7 +67,12 @@ public class ExprParser implements Parser {
                 tkz.consume(")");
                 return result;
             } else {
-                return new IntLit(Integer.parseInt(tkz.consume()));
+                if(tkz.peek().matches("[0-9]+")) {
+                    return new IntLit(Integer.parseInt(tkz.consume()));
+                }else{
+                    String s = tkz.consume();
+                    return new Variable(s);
+                }
             }
         } catch (NoSuchElementException e) {
             throw new SyntaxError("Unexpected end of input");
